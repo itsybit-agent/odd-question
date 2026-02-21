@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Odd Question Out</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Setup Screen -->
+        <div id="setup" class="screen active">
+            <h1>❓ Odd Question</h1>
+            <p class="subtitle">Who Got the Different Question?</p>
+            
+            <!-- Saved Teams -->
+            <div class="saved-teams" id="savedTeamsSection">
+                <select id="savedTeams">
+                    <option value="">📂 Load a saved team...</option>
+                </select>
+                <button id="deleteTeam" class="btn btn-small btn-danger" title="Delete selected team">🗑️</button>
+            </div>
+
+            <div class="player-input">
+                <input type="text" id="playerName" placeholder="Enter player name" maxlength="20">
+                <button id="addPlayer" class="btn">Add</button>
+            </div>
+            
+            <ul id="playerList"></ul>
+            <button id="clearPlayers" class="btn btn-small btn-secondary" style="display:none; margin-bottom: 16px;">🗑️ Clear All</button>
+            
+            <div class="save-team-section" id="saveTeamSection" style="display:none;">
+                <input type="text" id="teamName" placeholder="Team name" maxlength="20">
+                <button id="saveTeam" class="btn btn-small">💾 Save Team</button>
+            </div>
+            
+            <div class="pack-selection">
+                <h4>Question Categories</h4>
+                <div id="packOptions"></div>
+            </div>
+            
+            <button id="startGame" class="btn btn-primary" disabled>Start Game (3+ players)</button>
+            
+            <div class="rules">
+                <h3>How to Play</h3>
+                <p><strong>1.</strong> Everyone secretly sees a question</p>
+                <p><strong>2.</strong> ONE player gets a different (but related) question</p>
+                <p><strong>3.</strong> Everyone writes their answer</p>
+                <p><strong>4.</strong> See all answers and vote for the odd one out!</p>
+                <div class="roles-info">
+                    <p>👥 <strong>Majority</strong> — same question, find the faker</p>
+                    <p>🕵️ <strong>Odd One Out</strong> — blend in with a similar answer!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Answer Screen (tap your name) -->
+        <div id="answer" class="screen">
+            <h2>Tap your name to answer</h2>
+            <p class="hint">Each player taps their button, sees their question, and enters their answer privately.</p>
+            
+            <div id="playerButtons"></div>
+            
+            <button id="showAnswers" class="btn btn-primary" disabled>Everyone Done? Show Answers</button>
+        </div>
+
+        <!-- Question Entry Screen (individual) -->
+        <div id="question" class="screen">
+            <h2 id="answeringPlayer" class="player-name"></h2>
+            
+            <div id="questionHidden" class="word-container">
+                <button id="showQuestion" class="btn btn-large">👆 Tap to see your question</button>
+            </div>
+            
+            <div id="questionVisible" class="word-container hidden">
+                <div class="question-box" id="questionDisplay"></div>
+                <textarea id="answerInput" placeholder="Type your answer..." maxlength="150"></textarea>
+                <div class="char-count"><span id="charCount">0</span>/150</div>
+                <button id="submitAnswer" class="btn btn-primary">Submit & Pass Phone</button>
+            </div>
+        </div>
+
+        <!-- Answers Reveal Screen -->
+        <div id="answers" class="screen">
+            <h2>🔍 The Answers</h2>
+            <div class="question-reveal" id="questionReveal"></div>
+            
+            <div id="answersList"></div>
+            
+            <button id="startVote" class="btn btn-primary">Start Voting</button>
+        </div>
+
+        <!-- Vote Screen -->
+        <div id="vote" class="screen">
+            <h2>🗳️ Who had a different question?</h2>
+            
+            <div id="votePlayers"></div>
+            
+            <button id="confirmVote" class="btn btn-danger">Reveal Results</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="screen">
+            <h1 id="resultTitle"></h1>
+            
+            <div id="revealQuestions" class="reveal-box"></div>
+            
+            <div id="voteResults"></div>
+            
+            <div class="game-over-buttons">
+                <button id="newRound" class="btn btn-primary">🔄 New Round (Same Players)</button>
+                <button id="playAgain" class="btn btn-secondary">👋 New Game (Reset Players)</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
