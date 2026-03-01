@@ -295,10 +295,34 @@ textarea {
     border-left: 4px solid #9b59b6;
 }
 
+.answer-card.voteable {
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.answer-card.voteable:hover {
+    background: rgba(255,255,255,0.1);
+    transform: scale(1.02);
+}
+
+.answer-card.voteable.voted {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.15);
+}
+
 .answer-card .player {
     font-weight: bold;
     color: #9b59b6;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vote-badge {
+    font-size: 0.9rem;
+    color: #e74c3c;
 }
 
 .answer-card .text {

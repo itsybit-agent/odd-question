@@ -234,6 +234,67 @@ function renderAnswers() {
     `).join('');
 }
 
+function renderAnswersWithVoting() {
+    gameState.votes = {};
+    
+    // Show the majority question
+    questionRevealEl.innerHTML = `
+        <div class="label">The Question:</div>
+        <div class="question">${gameState.majorityQuestion}</div>
+    `;
+    
+    // Shuffle answers for display with voting
+    const shuffled = shuffle(players.map((p, i) => ({ ...p, index: i })));
+    
+    answersListEl.innerHTML = `
+        <div class="vote-instructions">🗳️ Tap to vote for who had a different question!</div>
+        <div class="vote-counter" id="voteCounter">Votes: 0 / ${players.length}</div>
+        ${shuffled.map(p => `
+            <div class="answer-card voteable" data-index="${p.index}" onclick="toggleVote(${p.index})">
+                <div class="player">${p.name} <span class="vote-badge" id="badge-${p.index}"></span></div>
+                <div class="text">"${p.answer || '(no answer)'}"</div>
+            </div>
+        `).join('')}
+    `;
+    
+    // Hide the old "Start Voting" button, show "See Results"
+    if (startVoteBtn) startVoteBtn.style.display = 'none';
+    if (confirmVoteBtn) {
+        confirmVoteBtn.style.display = 'block';
+        // Move confirm button to answers screen
+        answersListEl.appendChild(confirmVoteBtn);
+    }
+}
+
+function toggleVote(index) {
+    const totalVotes = Object.values(gameState.votes).reduce((a, b) => a + b, 0);
+    
+    if (gameState.votes[index]) {
+        // Remove vote
+        delete gameState.votes[index];
+    } else if (totalVotes < players.length) {
+        // Add vote (only if we have votes left)
+        gameState.votes[index] = (gameState.votes[index] || 0) + 1;
+    }
+    
+    updateVoteBadges();
+}
+
+function updateVoteBadges() {
+    const totalVotes = Object.values(gameState.votes).reduce((a, b) => a + b, 0);
+    document.getElementById('voteCounter').textContent = `Votes: ${totalVotes} / ${players.length}`;
+    
+    document.querySelectorAll('.answer-card.voteable').forEach(card => {
+        const idx = parseInt(card.dataset.index);
+        const count = gameState.votes[idx] || 0;
+        const badge = document.getElementById(`badge-${idx}`);
+        if (badge) badge.textContent = count > 0 ? `👆 ${count}` : '';
+        card.classList.toggle('voted', count > 0);
+    });
+}
+
+window.toggleVote = toggleVote;
+
 function renderVotePlayers() {
     gameState.votes = {};
     
@@ -367,13 +428,8 @@ submitAnswerBtn.addEventListener('click', () => {
 });
 
 showAnswersBtn.addEventListener('click', () => {
-    renderAnswers();
+    renderAnswersWithVoting();
     showScreen('answers');
-});
-
-startVoteBtn.addEventListener('click', () => {
-    renderVotePlayers();
-    showScreen('vote');
 });
 
 confirmVoteBtn.addEventListener('click', () => {
@@ -452,7 +508,7 @@ loadLastPlayers();
 // ═══════════════════════════════════════════════════════════════════
 // TEAM SAVE/LOAD
 // ═══════════════════════════════════════════════════════════════════
-const TEAMS_KEY = 'oddquestion_saved_teams';
+const TEAMS_KEY = 'partygames_saved_teams';
 
 function getSavedTeams() {
     try {
